@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery.serializejson.js"></script>
+    <title>登录</title>
+    <style>
+        .login-panel{
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body style="background: url(resources/pictures/loginBG.jpg) no-repeat; background-size: cover;">
+    <div class="login-panel">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="panel panel-default col-lg-offset-7 col-lg-4">
+                    <div class="panel-body">
+                        <form class="form-horizontal" onsubmit="return false" style="padding-top: 100px; padding-bottom: 100px" id="loginForm">
+                            <div class="form-group">
+                                <label for="id" class="col-sm-2 control-label">账号</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="id" class="form-control" id="id" placeholder="账号">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="loginPassword" class="col-sm-2 control-label">密码</label>
+                                <div class="col-sm-10">
+                                    <input type="password" name="password" class="form-control" id="loginPassword" placeholder="密码">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <div class="alert alert-warning hide" role="alert" id="errorAlert">
+                                        <strong>用户名或密码错误！</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" name="remember"> 记住我
+                                        </label>
+                                        <a href="#" style="float: right;" data-toggle="modal" data-target="#registerModal">注册</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-success" id="loginSubmit">登录</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">注册</h4>
+                </div>
+                <form id="registForm" onsubmit="return false">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">姓名</label>
+                            <input type="text" name="name" class="form-control" id="name" placeholder="输入姓名">
+                        </div>
+                        <div class="form-group">
+                            <label for="registPassword">密码</label>
+                            <input type="password" name="password" class="form-control" id="registPassword" placeholder="输入密码">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" id="registSubmit">提交</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+$(document).ready(function() {
+    $('#loginSubmit').click(function(event) {
+       var param = $('#loginForm').serializeJSON();
+       $.ajax({
+           url: 'http://localhost:8080/reservation/login/login',
+           type: 'post',
+           dataType: 'json',
+           contentType: "application/json; charset=utf-8",
+           data: JSON.stringify(param),
+           success: function(res) {
+               if(res.result == "success"){
+                   window.location.href = "index.html";
+               } else
+                   $('#errorAlert').prop('class', 'alert alert-warning');
+           }
+       })
+    });
+
+    $('#registSubmit').click(function (event) {
+        var param = $('#registForm').serializeJSON();
+        $.ajax({
+            url: 'http://localhost:8080/reservation/login/regist',
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(param),
+            success: function(res) {
+                alert("您的ID是" + res.result);
+                window.location.reload();
+            }
+        })
+    });
+});
+</script>
+
+</html>
